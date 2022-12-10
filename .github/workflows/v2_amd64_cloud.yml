@@ -1,4 +1,4 @@
-name: v2
+name: v2_amd64_cloud
 
 on:
 #  repository_dispatch:
@@ -40,13 +40,13 @@ jobs:
           mv *.deb ${GITHUB_WORKSPACE}/releases
       - name: Generate release tag
         run: |
-          echo "::set-output name=release_tag::v2"
+          echo "::set-output name=release_tag::v2_amd64_cloud"
           touch release.txt
           echo "Last updated on $(date +"%Y.%m.%d-%H:%M") UTC+08:00" >> release.txt
       - name: Upload bins to release
         uses: softprops/action-gh-release@v1
         with:
-         tag_name: v2
+         tag_name: v2_amd64_cloud
          body_path: release.txt
          files: releases/*
       - name: Delete workflow runs
