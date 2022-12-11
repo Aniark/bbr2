@@ -27,7 +27,7 @@ jobs:
           wget -qO i386 https://salsa.debian.org/kernel-team/linux/-/raw/master/debian/config/i386/config?inline=false
           wget -qO i686 https://salsa.debian.org/kernel-team/linux/-/raw/master/debian/config/i386/config.686?inline=false
           wget -qO kernelarch-x86 https://salsa.debian.org/kernel-team/linux/-/raw/master/debian/config/kernelarch-x86/config
-          wget -qO .config https://salsa.debian.org/kernel-team/linux/-/raw/bullseye/master/config/config
+          wget -qO .config https://salsa.debian.org/kernel-team/linux/-/raw/master/config/config
           cat i386 i686 kernelarch-x86 >> .config
           scripts/config -d DEBUG_INFO \
                          -u SYSTEM_TRUSTED_KEYS \
