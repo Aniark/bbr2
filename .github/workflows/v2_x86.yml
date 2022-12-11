@@ -18,7 +18,7 @@ jobs:
       - name: Install deps
         run: |
          sudo apt update
-         sudo apt -yq --no-install-suggests --no-install-recommends install kernel-package libncurses5-dev libelf-dev liblz4-tool
+         sudo apt -yq --no-install-suggests --no-install-recommends install kernel-package libncurses5-dev libelf-dev gcc-i686-linux-gnu liblz4-tool
          mkdir releases
       - name: Build
         run: |
