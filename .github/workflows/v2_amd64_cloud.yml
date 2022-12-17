@@ -1,0 +1,75 @@
+name: v2_amd64_cloud
+
+on:
+#  repository_dispatch:
+  workflow_dispatch:
+#  push:
+#  release:
+#    types: [released, edited]
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-18.04
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - name: Install deps
+        run: |
+         sudo apt update
+         sudo apt --no-install-recommends install kernel-package libncurses5-dev libelf-dev liblz4-tool
+         mkdir releases
+      - name: Build
+        run: |
+          git clone https://github.com/google/bbr.git -b v2alpha
+          cd bbr
+          wget -qO amd64 https://salsa.debian.org/kernel-team/linux/-/raw/sid/debian/config/amd64/config
+          wget -qO kernelarch-x86 https://salsa.debian.org/kernel-team/linux/-/raw/sid/debian/config/kernelarch-x86/config
+          wget -qO .config https://salsa.debian.org/kernel-team/linux/-/raw/sid/debian/config/config
+          wget -qO cloud https://salsa.debian.org/kernel-team/linux/-/raw/sid/debian/config/config.cloud
+          wget -qO cloud-amd64 https://salsa.debian.org/kernel-team/linux/-/raw/sid/debian/config/amd64/config.cloud-amd64
+          cat kernelarch-x86 cloud cloud-amd64 amd64 >> .config
+          scripts/config -d DEBUG_INFO \
+                         -u SYSTEM_TRUSTED_KEYS \
+                         -e TCP_CONG_BBR2 \
+                         -e DEFAULT_BBR2
+          make bindeb-pkg -j`nproc`
+      - name: Move bins to release dir
+        run: |
+          mv *.deb ${GITHUB_WORKSPACE}/releases
+      - name: Generate release tag
+        run: |
+          echo "::set-output name=release_tag::v2_amd64_cloud"
+          touch release.txt
+          echo "Last updated on $(date +"%Y.%m.%d-%H:%M") UTC+08:00" >> release.txt
+      - name: Upload bins to release
+        uses: softprops/action-gh-release@v1
+        with:
+         tag_name: v2_amd64_cloud
+         body_path: release.txt
+         files: releases/*
+      - name: Delete workflow runs
+        uses: GitRML/delete-workflow-runs@main
+        with:
+         retain_days: 1
+         keep_minimum_runs: 3
+         
+  push:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Clean
+      run: |
+        rm -rf *
+    - name: Commit
+      run: |
+        git config --global user.email "actions@github.com"
+        git config --global user.name "GitHub Actions"
+        git checkout --orphan new_branch
+        git add -A
+        git commit -am "update new file"
+        git branch -D main
+        git branch -m main
+        git push origin main --force
