@@ -1,4 +1,4 @@
-name: l4s_x86
+name: l4s_x86_cloud
 
 on:
 #  repository_dispatch:
@@ -23,11 +23,11 @@ jobs:
         run: |
           git clone https://github.com/google/bbr.git -b l4s-testing-2022-11-06-v1
           cd bbr
-          wget -qO i386 https://salsa.debian.org/kernel-team/linux/-/raw/sid/debian/config/i386/config
-          wget -qO i686 https://salsa.debian.org/kernel-team/linux/-/raw/sid/debian/config/i386/config.686
-          wget -qO kernelarch-x86 https://salsa.debian.org/kernel-team/linux/-/raw/sid/debian/config/kernelarch-x86/config
-          wget -qO .config https://salsa.debian.org/kernel-team/linux/-/raw/sid/debian/config/config
-          wget -qO cloud https://salsa.debian.org/kernel-team/linux/-/raw/sid/debian/config/config.cloud
+          wget -qO i386 https://salsa.debian.org/kernel-team/linux/-/raw/bullseye/debian/config/i386/config
+          wget -qO i686 https://salsa.debian.org/kernel-team/linux/-/raw/bullseye/debian/config/i386/config.686
+          wget -qO kernelarch-x86 https://salsa.debian.org/kernel-team/linux/-/raw/bullseye/debian/config/kernelarch-x86/config
+          wget -qO .config https://salsa.debian.org/kernel-team/linux/-/raw/bullseye/debian/config/config
+          wget -qO cloud https://salsa.debian.org/kernel-team/linux/-/raw/bullseye/debian/config/config.cloud
           cat i386 i686 kernelarch-x86 cloud >> .config
           scripts/config -d DEBUG_INFO \
                          -u SYSTEM_TRUSTED_KEYS \
